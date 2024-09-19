@@ -6,7 +6,7 @@ mod settings;
 mod game;
 
 use settings::{ SCREEN_WIDTH, SCREEN_HEIGHT };
-use game::Game;
+use game::{ Game, Random };
 
 fn main() {
     let mut game = Game::new();
@@ -33,9 +33,12 @@ fn main() {
         TextureSettings::new()
     ).unwrap();
 
+    // let random = Random::get_instance();
+
     let mut last_update = Instant::now();
     while let Some(event) = window.next() {
         let delta_time = Instant::now().duration_since(last_update).as_secs_f32();
+        last_update = Instant::now();
 
         window.draw_2d(&event, |ctx, g, device| {
             clear([0.0, 0.0, 0.0, 1.0], g);
@@ -43,7 +46,7 @@ fn main() {
             text::Text
                 ::new_color([1.0, 1.0, 1.0, 1.0], 15)
                 .draw(
-                    &(1_f32 / delta_time).to_string(),
+                    &delta_time.to_string(),
                     &mut glyphs,
                     &ctx.draw_state,
                     ctx.transform.trans(15_f64, 15_f64),
@@ -53,7 +56,8 @@ fn main() {
             glyphs.factory.encoder.flush(device);
         });
 
-        game.physics_engine.update(delta_time);
-        last_update = Instant::now();
+        // game.physics_engine.add_circle(random.get_random_circle());
+
+        game.physics_engine.update(delta_time / 10_f32);
     }
 }

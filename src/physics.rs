@@ -57,8 +57,8 @@ impl Circle {
         if self.is_static {
             return;
         }
-        self.position.x += (self.velocity.x * delta_time) / 10.0;
-        self.position.y += (self.velocity.y * delta_time) / 10.0;
+        self.position.x += self.velocity.x * delta_time;
+        self.position.y += self.velocity.y * delta_time;
     }
 }
 
