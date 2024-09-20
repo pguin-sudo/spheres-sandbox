@@ -6,7 +6,7 @@ mod settings;
 mod game;
 
 use settings::{ SCREEN_WIDTH, SCREEN_HEIGHT };
-use game::{ Game, Random };
+use game::{ Game /*Random*/ };
 
 fn main() {
     let mut game = Game::new();
@@ -40,13 +40,16 @@ fn main() {
         let delta_time = Instant::now().duration_since(last_update).as_secs_f32();
         last_update = Instant::now();
 
+        let tps = 1_f32 / delta_time;
+        let objects = game.physics_engine.get_objects_amount();
+
         window.draw_2d(&event, |ctx, g, device| {
             clear([0.0, 0.0, 0.0, 1.0], g);
             game.draw(&ctx, g);
             text::Text
                 ::new_color([1.0, 1.0, 1.0, 1.0], 15)
                 .draw(
-                    &delta_time.to_string(),
+                    &format!("TPS: {tps}; Objects: {objects}"),
                     &mut glyphs,
                     &ctx.draw_state,
                     ctx.transform.trans(15_f64, 15_f64),

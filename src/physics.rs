@@ -81,6 +81,10 @@ impl Engine {
         &self.circles
     }
 
+    pub fn get_objects_amount(&self) -> usize {
+        self.circles.len()
+    }
+
     pub fn update(&mut self, delta_time: f32) {
         let len = self.circles.len();
         for i in 0..len {
@@ -156,7 +160,6 @@ impl Engine {
 
             circle.apply_force(Vector2::new(0.0, GRAVITATIONAL_ACCELERATION * circle.mass));
 
-            // Update circle position based on velocity
             circle.update(delta_time);
         }
     }
