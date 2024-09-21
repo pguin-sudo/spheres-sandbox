@@ -1,3 +1,4 @@
+use nalgebra::Point2;
 use piston_window::*;
 use std::time::Instant;
 
@@ -6,7 +7,7 @@ mod settings;
 mod game;
 
 use settings::{ SCREEN_WIDTH, SCREEN_HEIGHT };
-use game::{ Game /*Random*/ };
+use game::{ Game, Random };
 
 fn main() {
     let mut game = Game::new();
@@ -33,15 +34,43 @@ fn main() {
         TextureSettings::new()
     ).unwrap();
 
-    // let random = Random::get_instance();
+    let random = Random::get_instance();
+
+    let mut mousepos_args = [0_f64, 0_f64];
 
     let mut last_update = Instant::now();
     while let Some(event) = window.next() {
         let delta_time = Instant::now().duration_since(last_update).as_secs_f32();
         last_update = Instant::now();
 
-        let tps = 1_f32 / delta_time;
+        let tps = (1_f32 / delta_time) as u32;
         let objects = game.physics_engine.get_objects_amount();
+
+        match event {
+            Event::Input(
+                Input::Button(
+                    ButtonArgs {
+                        state: ButtonState::Press,
+                        button: Button::Mouse(MouseButton::Right),
+                        ..
+                    },
+                ),
+                _,
+            ) => {
+                game.physics_engine.add_circle(
+                    random.get_random_circle(
+                        Some(Point2::new(mousepos_args[0] as f32, mousepos_args[1] as f32)),
+                        None,
+                        None,
+                        false
+                    )
+                );
+            }
+            Event::Input(Input::Move(Motion::MouseCursor(new_coords)), _) => {
+                mousepos_args = new_coords;
+            }
+            _ => {}
+        }
 
         window.draw_2d(&event, |ctx, g, device| {
             clear([0.0, 0.0, 0.0, 1.0], g);
@@ -58,8 +87,6 @@ fn main() {
                 .unwrap();
             glyphs.factory.encoder.flush(device);
         });
-
-        // game.physics_engine.add_circle(random.get_random_circle());
 
         game.physics_engine.update(delta_time / 10_f32);
     }
