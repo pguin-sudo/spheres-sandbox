@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 use nalgebra::{ Point2, Vector2 };
 use piston_window::*;
 use rand::Rng;
@@ -12,21 +14,30 @@ impl Random {
         Random
     }
 
-    pub fn get_random_circle(&self, is_static: bool) -> Circle {
+    pub fn get_random_circle(
+        &self,
+        position_arg: Option<Point2<f32>>,
+        mass_arg: Option<f32>,
+        amortization_arg: Option<f32>,
+        is_static: bool
+    ) -> Circle {
         let mut rng: rand::prelude::ThreadRng = rand::thread_rng();
 
-        let mass: f32 = rng.gen::<f32>();
-        let amortization = rng.gen::<f32>() / 4_f32 + 0.75_f32;
-
-        Circle::new(
+        let mass: f32 = mass_arg.unwrap_or_else(|| rng.gen::<f32>());
+        let amortization: f32 = amortization_arg.unwrap_or_else(|| rng.gen::<f32>() / 4.0 + 0.75);
+        let position: Point2<f32> = position_arg.unwrap_or_else(||
             Point2::new(
                 rng.gen_range(0..SCREEN_WIDTH) as f32,
                 rng.gen_range(0..SCREEN_HEIGHT) as f32
-            ),
-            Vector2::new(0 as f32, 0 as f32),
+            )
+        );
+
+        Circle::new(
+            position,
+            Vector2::new(0.0, 0.0),
             amortization,
-            mass * 10_f32,
-            rng.gen::<f32>() * 10_f32 + 10_f32,
+            mass * 10.0,
+            (mass / PI).sqrt() * 50.0,
             [mass, 0.9, amortization, 1.0],
             is_static
         )
@@ -49,11 +60,11 @@ impl Game {
     pub fn init(&mut self) {
         let random = Random::get_instance();
         for _ in 0..NUM_CIRCLES {
-            self.physics_engine.add_circle(random.get_random_circle(false));
+            self.physics_engine.add_circle(random.get_random_circle(None, None, None, false));
         }
 
         for _ in 0..NUM_STATIC_CIRCLES {
-            self.physics_engine.add_circle(random.get_random_circle(true));
+            self.physics_engine.add_circle(random.get_random_circle(None, None, None, false));
         }
     }
 
