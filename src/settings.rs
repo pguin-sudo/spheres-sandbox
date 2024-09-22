@@ -7,4 +7,4 @@ pub const PHYSICS_MARGIN: u32 = 50;
 
 // Physics
 pub const TIME_SPEED: f32 = 0.1;
-pub const GRAVITATIONAL_ACCELERATION: f32 = 9.80665;
+pub const GRAVITATIONAL_ACCELERATION: f32 = 9.80665; // 0.0;
