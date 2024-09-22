@@ -66,6 +66,15 @@ fn main() {
                 );
             }
 
+            Event::Input(
+                Input::Button(
+                    ButtonArgs { state: ButtonState::Press, button: Button::Keyboard(Key::R), .. },
+                ),
+                _,
+            ) => {
+                game = Game::new();
+            }
+
             Event::Input(Input::Move(Motion::MouseCursor(new_coords)), _) => {
                 mousepos_args = new_coords;
             }
