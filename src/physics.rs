@@ -1,8 +1,14 @@
-use std::vec::Vec;
+use std::{ slice::Iter, vec::Vec };
 
 use nalgebra::{ distance, Point2, Vector2 };
 
-use crate::settings::{ GRAVITATIONAL_ACCELERATION, PHYSICS_MARGIN, SCREEN_HEIGHT, SCREEN_WIDTH };
+use crate::settings::{
+    GRAVITATIONAL_ACCELERATION,
+    PHYSICS_MARGIN,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
+    TIME_SPEED,
+};
 
 pub struct Circle {
     pub position: Point2<f32>,
@@ -57,8 +63,8 @@ impl Circle {
         if self.is_static {
             return;
         }
-        self.position.x += self.velocity.x * delta_time;
-        self.position.y += self.velocity.y * delta_time;
+        self.position.x += self.velocity.x * delta_time * TIME_SPEED;
+        self.position.y += self.velocity.y * delta_time * TIME_SPEED;
     }
 }
 
@@ -77,8 +83,8 @@ impl Engine {
         self.circles.push(circle);
     }
 
-    pub fn get_circles(&self) -> &Vec<Circle> {
-        &self.circles
+    pub fn get_circles(&self) -> Iter<'_, Circle> {
+        self.circles.iter()
     }
 
     pub fn get_objects_amount(&self) -> usize {

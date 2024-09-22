@@ -43,9 +43,6 @@ fn main() {
         let delta_time = Instant::now().duration_since(last_update).as_secs_f32();
         last_update = Instant::now();
 
-        let tps = (1_f32 / delta_time) as u32;
-        let objects = game.physics_engine.get_objects_amount();
-
         match event {
             Event::Input(
                 Input::Button(
@@ -72,6 +69,9 @@ fn main() {
             _ => {}
         }
 
+        let tps = (1_f32 / delta_time) as u32;
+        let objects = game.physics_engine.get_objects_amount();
+
         window.draw_2d(&event, |ctx, g, device| {
             clear([0.0, 0.0, 0.0, 1.0], g);
             game.draw(&ctx, g);
@@ -88,6 +88,6 @@ fn main() {
             glyphs.factory.encoder.flush(device);
         });
 
-        game.physics_engine.update(delta_time / 10_f32);
+        game.physics_engine.update(delta_time);
     }
 }

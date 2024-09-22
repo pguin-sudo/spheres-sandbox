@@ -38,7 +38,7 @@ impl Random {
             amortization,
             mass * 10.0,
             (mass / PI).sqrt() * 50.0,
-            [mass, 0.9, amortization, 1.0],
+            [0.6, 0.6, amortization, 1.0],
             is_static
         )
     }
