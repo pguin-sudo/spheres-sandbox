@@ -5,7 +5,7 @@ use piston_window::*;
 use rand::Rng;
 
 use crate::physics::{ Circle, Engine };
-use crate::settings::{ NUM_CIRCLES, NUM_STATIC_CIRCLES, SCREEN_HEIGHT, SCREEN_WIDTH };
+use crate::settings::{ MAX_MASS, NUM_CIRCLES, NUM_STATIC_CIRCLES, SCREEN_HEIGHT, SCREEN_WIDTH };
 
 pub struct Random;
 
@@ -23,7 +23,7 @@ impl Random {
     ) -> Circle {
         let mut rng: rand::prelude::ThreadRng = rand::thread_rng();
 
-        let mass: f32 = mass_arg.unwrap_or_else(|| rng.gen::<f32>());
+        let mass: f32 = mass_arg.unwrap_or_else(|| rng.gen::<f32>() * MAX_MASS);
         let amortization: f32 = amortization_arg.unwrap_or_else(|| rng.gen::<f32>() / 4.0 + 0.75);
         let position: Point2<f32> = position_arg.unwrap_or_else(||
             Point2::new(
@@ -38,7 +38,7 @@ impl Random {
             amortization,
             mass * 10.0,
             (mass / PI).sqrt() * 50.0,
-            [0.6, 0.6, amortization, 1.0],
+            [(mass / MAX_MASS).min(1.0), 0.6, amortization, 1.0],
             is_static
         )
     }
