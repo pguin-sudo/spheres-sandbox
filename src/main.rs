@@ -89,29 +89,35 @@ fn main() {
 
             // Loop
             Event::Loop(_) => {
-                let delta_time = Instant::now().duration_since(last_update).as_secs_f32();
-                last_update = Instant::now();
+                let current_time = Instant::now();
+                let delta_time = current_time.duration_since(last_update).as_secs_f32();
+                last_update = current_time;
 
-                let tps = (1_f32 / delta_time) as u32;
-                let objects = game.physics_engine.get_objects_amount();
+                game.physics_engine.update(delta_time);
 
                 window.draw_2d(&event, |ctx, g, device| {
                     clear([0.0, 0.0, 0.0, 1.0], g);
                     game.draw(&ctx, g);
+
                     text::Text
                         ::new_color([1.0, 1.0, 1.0, 1.0], 15)
                         .draw(
-                            &format!("TPS: {tps}; Objects: {objects}"),
+                            &format!(
+                                "TPS: {}; Objects: {}",
+                                (1.0 / delta_time).round() as u32,
+                                game.physics_engine.get_objects_amount()
+                            ),
                             &mut glyphs,
                             &ctx.draw_state,
-                            ctx.transform.trans(15_f64, 15_f64),
+                            ctx.transform.trans(15.0, 15.0),
                             g
                         )
                         .unwrap();
+
                     glyphs.factory.encoder.flush(device);
                 });
-                game.physics_engine.update(delta_time);
             }
+
             _ => {}
         }
     }

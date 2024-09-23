@@ -64,24 +64,21 @@ impl Game {
         }
 
         for _ in 0..NUM_STATIC_CIRCLES {
-            self.physics_engine.add_circle(random.get_random_circle(None, None, None, false));
+            self.physics_engine.add_circle(random.get_random_circle(None, None, None, true));
         }
     }
 
     pub fn draw(&mut self, context: &Context, g: &mut G2d) {
-        for circle in self.physics_engine.get_circles() {
-            let circle_shape = Ellipse::new(circle.color);
-            circle_shape.draw(
-                [
-                    (circle.position[0] - circle.radius) as f64,
-                    (circle.position[1] - circle.radius) as f64,
-                    (circle.radius * 2_f32) as f64,
-                    (circle.radius * 2_f32) as f64,
-                ],
-                &DrawState::default(),
-                context.transform,
-                g
-            );
+        let circles = self.physics_engine.get_circles();
+        for circle in circles {
+            let diameter = circle.radius * 2.0;
+            let rectangle = [
+                (circle.position[0] - circle.radius) as f64,
+                (circle.position[1] - circle.radius) as f64,
+                diameter as f64,
+                diameter as f64,
+            ];
+            Ellipse::new(circle.color).draw(rectangle, &DrawState::default(), context.transform, g);
         }
     }
 }
