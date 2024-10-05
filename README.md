@@ -4,9 +4,9 @@
 
 Welcome to the **Simple Sphere Sandbox** project! This is a Rust-based application that allows users to interact with simple physics simulations involving spheres. You can summon dynamic and static spheres and restart the simulation at any time.
 
-Sphere Properties
-- **Color:** The color of each sphere indicates its level of damping. A more intense color reflects higher damping, while a most blue shade indicates bigger damping.
-- **Size:** The size of the sphere (calculated using the area formula) represents its weight. Larger spheres are heavier and will behave differently under simulated physics.
+## Sphere Properties
+- **Color**: The color of each sphere indicates its level of damping. A more intense color reflects higher damping, while a most blue shade indicates bigger damping.
+- **Size**: The size of the sphere (calculated using the area formula) represents its weight. Larger spheres are heavier and will behave differently under simulated physics.
 
 
 ## Controls
