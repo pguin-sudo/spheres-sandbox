@@ -37,7 +37,7 @@ impl Random {
             Vector2::new(0.0, 0.0),
             amortization,
             mass * 10.0,
-            (mass / PI).sqrt() * 50.0,
+            ((mass * 50.0) / PI).sqrt(),
             [(mass / MAX_MASS).min(1.0), 0.6, amortization, 1.0],
             is_static
         )
