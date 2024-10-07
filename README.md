@@ -1,4 +1,4 @@
-# Sphere Sandbox
+# Spheres Sandbox
 
 ![](https://github.com/user-attachments/assets/bbfb5550-edee-48e2-917e-a849d5e189bf)
 
@@ -18,12 +18,12 @@ Welcome to the **Simple Sphere Sandbox** project! This is a Rust-based applicati
 1. Ensure you have [Rust](https://www.rust-lang.org/tools/install) installed on your system.
 2. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/simple-sphere-sandbox.git
+   git clone https://github.com/pguin-sudo/spheres-sandbox.git
    ```
 
 3. Navigate to the project directory:
    ```bash
-   cd simple-sphere-sandbox
+   cd spheres-sandbox
    ```
 
 4. Build the project:
