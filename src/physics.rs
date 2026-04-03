@@ -1,14 +1,8 @@
-use std::{ slice::Iter, vec::Vec };
+use std::{slice::Iter, vec::Vec};
 
-use nalgebra::{ distance, Point2, Vector2 };
+use nalgebra::{distance, Point2, Vector2};
 
-use crate::settings::{
-    GRAVITATIONAL_ACCELERATION,
-    PHYSICS_MARGIN,
-    SCREEN_HEIGHT,
-    SCREEN_WIDTH,
-    TIME_SPEED,
-};
+use crate::settings::{get_gravity, PHYSICS_MARGIN, SCREEN_HEIGHT, SCREEN_WIDTH, TIME_SPEED};
 
 pub struct Circle {
     pub position: Point2<f32>,
@@ -28,7 +22,7 @@ impl Circle {
         mass: f32,
         radius: f32,
         color: [f32; 4],
-        is_static: bool
+        is_static: bool,
     ) -> Self {
         Circle {
             position,
@@ -91,7 +85,7 @@ impl Engine {
             Self::handle_circle_collisions(circle, others);
             if !circle.is_static {
                 Self::handle_wall_collisions(circle);
-                circle.apply_force(Vector2::new(0.0, GRAVITATIONAL_ACCELERATION * circle.mass));
+                circle.apply_force(Vector2::new(0.0, get_gravity() * circle.mass));
                 circle.update(delta_time);
             }
         }
@@ -129,33 +123,30 @@ impl Engine {
             if distance < collision_distance {
                 let normal = Vector2::new(
                     other_circle.position.x - circle.position.x,
-                    other_circle.position.y - circle.position.y
-                ).normalize();
+                    other_circle.position.y - circle.position.y,
+                )
+                .normalize();
                 let relative_velocity = Vector2::new(
                     other_circle.velocity.x - circle.velocity.x,
-                    other_circle.velocity.y - circle.velocity.y
+                    other_circle.velocity.y - circle.velocity.y,
                 );
                 let dot_product = relative_velocity.dot(&normal);
 
                 if dot_product < 0.0 {
-                    let impulse_mag =
-                        (-(1.0 + circle.amortization) * dot_product) /
-                        (1.0 / circle.mass + 1.0 / other_circle.mass);
+                    let impulse_mag = (-(1.0 + circle.amortization) * dot_product)
+                        / (1.0 / circle.mass + 1.0 / other_circle.mass);
 
                     // Apply impulse
                     let impulse = Vector2::new(normal.x * impulse_mag, normal.y * impulse_mag);
 
                     // Separate circles to avoid overlap
                     let overlap = collision_distance - distance;
-                    let separation_vector = Vector2::new(
-                        normal.x * overlap * 0.5,
-                        normal.y * overlap * 0.5
-                    );
+                    let separation_vector =
+                        Vector2::new(normal.x * overlap * 0.5, normal.y * overlap * 0.5);
 
                     if !circle.is_static {
-                        circle.apply_offset(
-                            Vector2::new(-separation_vector.x, -separation_vector.y)
-                        );
+                        circle
+                            .apply_offset(Vector2::new(-separation_vector.x, -separation_vector.y));
                         circle.velocity.x -= impulse.x / circle.mass;
                         circle.velocity.y -= impulse.y / circle.mass;
                     }
